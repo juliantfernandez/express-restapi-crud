@@ -2,7 +2,7 @@ const express = require('express')
 const morgan = require('morgan')
 const app = express()
 
-const products = [{
+let products = [{
     id: 1,
     name: "laptop",
     price: 3000
@@ -22,22 +22,36 @@ app.post('/products', (req,res) => {
 })
 
 app.put('/products', (req,res) => {
-    res.send('actualizando productos')
-})
-
-app.delete('/products', (req,res) => {
-    res.send('eliminando productos')
-})
-
-app.get('/products/:id', (req,res) => {
-    console.log(req.params.id)
-
     const productFound = products.find(function(product){ 
         return product.id == req.params.id})
 
         if(!productFound) return res.status(404).json({
             message: "product not found"
         })
+
+        
+})
+
+app.delete('/products/:id', (req,res) => {
+    const productFound = products.find(function(product){ 
+        return product.id == req.params.id})
+
+        if(!productFound) return res.status(404).json({
+            message: "product not found"
+        })
+
+    products = products.filter(p => p.id !== parseInt(req.params.id))
+
+
+    console.log(products)
+
+    res.sendStatus(204)
+})
+
+app.get('/products/:id', (req,res) => {
+    console.log(req.params.id)
+
+  
     res.json(productFound)
 })
 
